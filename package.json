@@ -24,6 +24,7 @@
     "@vue/cli-service": "^4.4.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.1.0",
+    "d3": "^5.16.0",
     "typescript": "~3.9.3",
     "vue-template-compiler": "^2.6.11"
   }
