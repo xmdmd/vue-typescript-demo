@@ -1,3 +1,12 @@
+## 在大型项目中使用typescript的原因
+- TypeScript 具有类型系统，且是 JavaScript 的超集。 JavaScript 能做的，它能做。JavaScript 不能做的，它也能做。
+- TypeScript 已经比较成熟了，市面上相关资料也比较多，大部分的库和框架也读对 TypeScript 做了很好的支持。
+- 保证优秀的前提下，它还在积极的开发完善之中，不断地会有新的特性加入进来
+- JavaScript 是弱类型并且没有命名空间，导致很难模块化，使得其在大型的协作项目中不是很方便
+- vscode、ws 等编辑器对 TypeScript 支持很友好
+- TypeScript 在组件以及业务的类型校验上支持比较好；配合好编辑器，如果不按照定义好的类型来的话，编辑器本身就会给你报错，而不会等到编译才来报错
+- 命令空间 + 接口申明更方便类型校验，防止代码的不规范
+等等等
 
 ## vue组件的ts写法
 - 从 vue2.5 之后，vue 对 ts 有更好的支持。根据官方文档，vue 结合 typescript ，有两种书写方式
@@ -230,6 +239,8 @@ export default class MyComponent {
 日常开发中状态管理工具在各模块数据交互传输也起到很重要的作用，就可以用到vuex-class.
 
 ### vuex-class的常用示例
+- vuex-class 是一个基于 Vue、Vuex、vue-class-component 的库，和 vue-property-decorator 一样，它也提供了4 个修饰符以及 namespace，解决了 vuex 在 .vue 文件中使用上的不便的问题。
+
 举例：
 ```
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
@@ -281,3 +292,6 @@ import { State, Getter, Action, Mutation} from 'vuex-class';
 
 //可以直接通过this.foo/this.bar/this.baz/this.qux来调用
 ```
+
+
+可参考学习的项目：https://github.com/xhonker/ts-cnode 项目
