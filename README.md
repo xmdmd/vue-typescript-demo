@@ -1,3 +1,6 @@
+
+安装：使用@vue/cli=>vue create vue-typescript-demo=>勾选typescrip,选择class风格。
+
 ## 在大型项目中使用typescript的原因
 - TypeScript 具有类型系统，且是 JavaScript 的超集。 JavaScript 能做的，它能做。JavaScript 不能做的，它也能做。
 - TypeScript 已经比较成熟了，市面上相关资料也比较多，大部分的库和框架也读对 TypeScript 做了很好的支持。
@@ -31,42 +34,13 @@
 - 理想情况下， Vue.extend 的书写方式，是学习成本最低的。在现有写法的基础上，几乎 0 成本的迁移。
 但是 Vue.extend模式，需要与 mixins 结合使用。在 mixin 中定义的方法，不会被 typescript 识别到，这就意味着会出现丢失代码提示、类型检查、编译报错等问题。
 
+## vue的类组件
+- 什么是vue的类组件：通过class来继承vue来写组件，可以写入一些装饰类等用法
+- vue-class-component 插件，是vue官方出的
+- vue-property-decorator 插件，是vue社区出的，基于vue-class-component，拓展出许多操作符，如@Prop、@Emit、@Inject等，可以说是vue-class-component的一个超集
 
-## vue-class-component
-- 装饰器函数 '@'
-  引用、调用它所修饰的函数
-eg：
-```
-  class Example {
-　　@logMethod(1)
-　　@logMethod(2)
-　　sum(a,b) {
-　　　　return a + b ;
-　　}
-  }
-
-  function logMethod(id) {
-　　console.log('evaluated logMethod'+id);
-　　return (target, name, desctiptor) => console.log('excute logMethod' + id)
-}
-```
-
-最终返回：
-```
-  evaluated logMethod 1
-  evaluated logMethod 2
-  excute logMethod 2
-  excute logMethod 1
-```
-
-使用babel在线版的REPL[https://babeljs.io/repl]，执行得到a.js
-
-装饰器执行顺序，由内向外执行
-注意：装饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。类是不会提升的，所以就没有这方面的问题。
-
-
-## vue-property-decorator和vuex-class提供的装饰器
-- vue-property-decorator的装饰器：
+### vue-property-decorator的装饰器：
+  - @Component (完全继承于vue-class-component)
   - @Prop
   - @PropSync
   - @Provide
@@ -75,14 +49,7 @@ eg：
   - @Inject
   - @Provide
   - @Emit
-  - @Component (provided by vue-class-component)
-  - Mixins (the helper function named mixins provided by vue-class-component)
-
-- vuex-class的装饰器：
-  - @State
-  - @Getter
-  - @Action
-  - @Mutation
+  - Mixins (在vue-class-component中定义)
 
 ### vue-property-decorator的常用示例
 #### 1. @Component
@@ -238,9 +205,15 @@ export default class MyComponent {
 以上就是vue中引入vue-property-decorator后的常用的一些示例。
 日常开发中状态管理工具在各模块数据交互传输也起到很重要的作用，就可以用到vuex-class.
 
-### vuex-class的常用示例
+### vuex-class的装饰器：
 - vuex-class 是一个基于 Vue、Vuex、vue-class-component 的库，和 vue-property-decorator 一样，它也提供了4 个修饰符以及 namespace，解决了 vuex 在 .vue 文件中使用上的不便的问题。
-
+  
+  - @State
+  - @Getter
+  - @Action
+  - @Mutation
+  
+### vuex-class的常用示例
 举例：
 ```
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
@@ -291,6 +264,50 @@ import { State, Getter, Action, Mutation} from 'vuex-class';
 @Mutation qux
 
 //可以直接通过this.foo/this.bar/this.baz/this.qux来调用
+```
+
+### 监听路由变化
+#### 在js中需要监听路由的变化时，可以通过全局路由守卫、组件内的beforeRouterEnter、beforeRouterLeaver等来监听路由的变化。那么在ts中是如何做到的呢？
+- 方法一：使用Watch监听
+```
+import { Component, Vue, Watch } from 'vue-property-decorator'
+
+@Watch('$route')
+routechange(to: any, from: any) {
+    console.log(to, from)
+}
+```
+
+- 方法二：使用路由钩子监听（前提：对钩子进行注册）
+```
+// 在main.ts中配置
+import { Component } from 'vue-property-decorator'
+Component.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteLeave',
+  'beforeRouteUpdate',
+]);
+```
+```
+// 在页面内使用
+// public beforeRouteLeave(to: any, from: any, next: any) {
+//   next()
+// }
+
+import { Vue, Component } from 'vue-property-decorator';
+// 引入路由中的Route对象
+import { Route } from 'vue-router';
+
+
+@Component({})
+export default class App extends Vue {
+  // 参数类型的定义，使用Route，
+  // next是函数，所以可以直接使用Function对象,
+  // 或者是next: () => void
+  beforeRouteEnter(to: Route, from: Route, next: Function) {
+      next()
+  }
+}
 ```
 
 
